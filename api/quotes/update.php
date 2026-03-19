@@ -1,0 +1,38 @@
+<?php
+require_once '../../config/Database.php';
+require_once '../../models/Quote.php';
+
+$database = new Database();
+$db = $database->connect();
+
+$quoteObj = new Quote($db);
+$data = json_decode(file_get_contents("php://input"));
+
+if (
+    !isset($data->id) ||
+    !isset($data->quote) ||
+    !isset($data->author_id) ||
+    !isset($data->category_id) ||
+    empty(trim($data->quote))
+) {
+    echo json_encode(['message' => 'Missing Required Parameters']);
+    exit();
+}
+
+$quoteObj->id = (int)$data->id;
+$quoteObj->quote = $data->quote;
+$quoteObj->author_id = (int)$data->author_id;
+$quoteObj->category_id = (int)$data->category_id;
+
+if ($quoteObj->update()) {
+    $quoteObj->read_single();
+
+    echo json_encode([
+        'id' => (int)$quoteObj->id,
+        'quote' => $quoteObj->quote,
+        'author' => $quoteObj->author,
+        'category' => $quoteObj->category
+    ]);
+} else {
+    echo json_encode(['message' => 'Quote Not Updated']);
+}
