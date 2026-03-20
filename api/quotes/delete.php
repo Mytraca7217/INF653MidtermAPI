@@ -15,8 +15,18 @@ if (!isset($data->id)) {
 
 $quoteObj->id = (int)$data->id;
 
+/* Check quote exists before delete */
+$checkQuote = $db->prepare("SELECT id FROM quotes WHERE id = :id");
+$checkQuote->bindParam(':id', $quoteObj->id, PDO::PARAM_INT);
+$checkQuote->execute();
+
+if ($checkQuote->rowCount() == 0) {
+    echo json_encode(['message' => 'No Quotes Found']);
+    exit();
+}
+
 if ($quoteObj->delete()) {
     echo json_encode(['id' => $quoteObj->id]);
 } else {
-    echo json_encode(['message' => 'Quote Not Deleted']);
+    echo json_encode(['message' => 'No Quotes Found']);
 }
