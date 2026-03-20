@@ -22,6 +22,16 @@ $quoteObj->quote = $data->quote;
 $quoteObj->author_id = (int)$data->author_id;
 $quoteObj->category_id = (int)$data->category_id;
 
+
+$checkAuthor = $db->prepare("SELECT id FROM authors WHERE id = :id");
+$checkAuthor->bindParam(':id', $quote->author_id);
+$checkAuthor->execute();
+
+if ($checkAuthor->rowCount() == 0) {
+    echo json_encode(['message' => 'author_id Not Found']);
+    exit();
+}
+
 if ($quoteObj->create()) {
     $quoteObj->read_single();
 
