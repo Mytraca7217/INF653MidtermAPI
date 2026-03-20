@@ -25,12 +25,12 @@ $quoteObj->category_id = (int)$data->category_id;
 if ($quoteObj->create()) {
     $quoteObj->read_single();
 
-    echo json_encode([
-        'id' => (int)$quoteObj->id,
-        'quote' => $quoteObj->quote,
-        'author' => $quoteObj->author,
-        'category' => $quoteObj->category
-    ]);
+   echo json_encode([
+    'id' => (int)$quoteObj->id,
+    'quote' => $quoteObj->quote,
+    'author_id' => (int)$quoteObj->author_id,
+    'category_id' => (int)$quoteObj->category_id
+]);
 } else {
     echo json_encode(['message' => 'Quote Not Created']);
 }
