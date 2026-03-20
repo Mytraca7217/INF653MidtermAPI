@@ -22,9 +22,8 @@ $quoteObj->quote = $data->quote;
 $quoteObj->author_id = (int)$data->author_id;
 $quoteObj->category_id = (int)$data->category_id;
 
-
 $checkAuthor = $db->prepare("SELECT id FROM authors WHERE id = :id");
-$checkAuthor->bindParam(':id', $quoteObj->author_id);
+$checkAuthor->bindParam(':id', $quoteObj->author_id, PDO::PARAM_INT);
 $checkAuthor->execute();
 
 if ($checkAuthor->rowCount() == 0) {
@@ -32,15 +31,22 @@ if ($checkAuthor->rowCount() == 0) {
     exit();
 }
 
-if ($quoteObj->create()) {
-    $quoteObj->read_single();
+$checkCategory = $db->prepare("SELECT id FROM categories WHERE id = :id");
+$checkCategory->bindParam(':id', $quoteObj->category_id, PDO::PARAM_INT);
+$checkCategory->execute();
 
-   echo json_encode([
-    'id' => (int)$quoteObj->id,
-    'quote' => $quoteObj->quote,
-    'author_id' => (int)$quoteObj->author_id,
-    'category_id' => (int)$quoteObj->category_id
-]);
+if ($checkCategory->rowCount() == 0) {
+    echo json_encode(['message' => 'category_id Not Found']);
+    exit();
+}
+
+if ($quoteObj->create()) {
+    echo json_encode([
+        'id' => (int)$quoteObj->id,
+        'quote' => $quoteObj->quote,
+        'author_id' => (int)$quoteObj->author_id,
+        'category_id' => (int)$quoteObj->category_id
+    ]);
 } else {
     echo json_encode(['message' => 'Quote Not Created']);
 }
