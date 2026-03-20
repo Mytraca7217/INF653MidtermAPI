@@ -24,7 +24,7 @@ $quoteObj->category_id = (int)$data->category_id;
 
 
 $checkAuthor = $db->prepare("SELECT id FROM authors WHERE id = :id");
-$checkAuthor->bindParam(':id', $quote->author_id);
+$checkAuthor->bindParam(':id', $quoteObj->author_id);
 $checkAuthor->execute();
 
 if ($checkAuthor->rowCount() == 0) {
