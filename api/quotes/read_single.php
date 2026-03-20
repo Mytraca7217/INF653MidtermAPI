@@ -22,5 +22,5 @@ if ($quoteObj->read_single()) {
         'category' => $quoteObj->category
     ]);
 } else {
-    echo json_encode(['message' => 'quote_id Not Found']);
+    echo json_encode(['message' => 'No Quotes Found']);
 }
